@@ -1,12 +1,11 @@
 (defproject reagent "0.6.1-SNAPSHOT"
   :url "http://github.com/reagent-project/reagent"
   :license {:name "MIT"}
-  :description "A simple ClojureScript interface to React"
+  :description "A simple ClojureScript interface to Inferno"
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.8.51"]
-                 [cljsjs/react-dom "15.4.0-0"]
-                 [cljsjs/react-dom-server "15.4.0-0"]]
+                 [cljsjs/inferno "1.0.3-0"]]
 
   :plugins [[lein-cljsbuild "1.1.3"]
             [codox "0.9.0"]]
@@ -57,9 +56,7 @@
                                   {:foreign-libs
                                    [{:file "target/webpack/bundle.js"
                                      :file-min "target/webpack/bundle.min.js"
-                                     :provides ["cljsjs.react.dom"
-                                                "cljsjs.react.dom.server"
-                                                "cljsjs.react"]
+                                     :provides ["cljsjs.inferno"]
                                      :requires []}]}}}}}
 
              :prod-test [:prod :test]

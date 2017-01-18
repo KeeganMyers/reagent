@@ -199,8 +199,6 @@
     ("input" "textarea") true
     false))
 
-(def reagent-input-class nil)
-
 (declare make-element)
 
 (def input-spec
@@ -212,15 +210,7 @@
      (let [this comp/*current-component*]
        (input-render-setup this jsprops)
        (make-element argv comp jsprops first-child)))})
-
-(defn reagent-input []
-  (when (nil? reagent-input-class)
-    (set! reagent-input-class (comp/create-class input-spec)))
-  reagent-input-class)
-
-
 ;;; Conversion from Hiccup forms
-
 (defn parse-tag [hiccup-tag]
   (let [[tag id class] (->> hiccup-tag name (re-matches re-tag) next)
         class (when-not (nil? class)
@@ -247,11 +237,11 @@
     (-> v (nth 1 nil) get-key)))
 
 (defn reag-element [tag v]
-  (let [c (comp/as-class tag)
+  (let [c v
         jsprops #js{:argv v}]
     (when-some [key (key-from-vec v)]
       ($! jsprops :key key))
-    ($ util/react createElement c jsprops)))
+    ($ util/react createVNode 2 c jsprops)))
 
 (defn adapt-react-class [c]
   (doto (NativeWrapper.)
@@ -274,15 +264,11 @@
           hasprops (or (nil? props) (map? props))
           jsprops (convert-props (if hasprops props) parsed)
           first-child (+ first (if hasprops 1 0))]
-      (if (input-component? comp)
-        (-> [(reagent-input) argv comp jsprops first-child]
-            (with-meta (meta argv))
-            as-element)
         (let [key (-> (meta argv) get-key)
               p (if (nil? key)
                   jsprops
                   (oset jsprops "key" key))]
-          (make-element argv comp p first-child))))))
+          (make-element argv comp p first-child)))))
 
 (defn str-coll [coll]
   (if (dev?)
@@ -362,42 +348,15 @@
       (warn (hiccup-err x "Every element in a seq should have a unique :key")))
     res))
 
-;; From https://github.com/babel/babel/commit/1d0e68f5a19d721fe8799b1ea331041d8bf9120e
-;; (def react-element-type (or (and (exists? js/Symbol)
-;;                                  ($ js/Symbol :for)
-;;                                  ($ js/Symbol for "react.element"))
-;;                             60103))
-
-;; (defn make-element-fast [argv comp jsprops first-child]
-;;   (let [key (some-> jsprops ($ :key))
-;;         ref (some-> jsprops ($ :ref))
-;;         props (if (nil? jsprops) (js-obj) jsprops)]
-;;     ($! props :children
-;;         (case (- (count argv) first-child)
-;;           0 nil
-;;           1 (as-element (nth argv first-child))
-;;           (reduce-kv (fn [a k v]
-;;                        (when (>= k first-child)
-;;                          (.push a (as-element v)))
-;;                        a)
-;;                      #js[] argv)))
-;;     (js-obj "key" key
-;;             "ref" ref
-;;             "props" props
-;;             "$$typeof" react-element-type
-;;             "type" comp
-;;             ;; "_store" (js-obj)
-;;             )))
-
 (defn make-element [argv comp jsprops first-child]
   (case (- (count argv) first-child)
     ;; Optimize cases of zero or one child
-    0 ($ util/react createElement comp jsprops)
+    0 ($ util/react createVNode 2 comp jsprops)
 
-    1 ($ util/react createElement comp jsprops
+    1 ($ util/react createVNode 2 comp jsprops
           (as-element (nth argv first-child nil)))
 
-    (.apply ($ util/react :createElement) nil
+    (.apply ($ util/react :createVNode) nil
             (reduce-kv (fn [a k v]
                          (when (>= k first-child)
                            (.push a (as-element v)))

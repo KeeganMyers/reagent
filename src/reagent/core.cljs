@@ -31,13 +31,13 @@
    (create-element type nil))
   ([type props]
    (assert (not (map? props)))
-   ($ react createElement type props))
+   ($ react createVNode 2 type props))
   ([type props child]
    (assert (not (map? props)))
-   ($ react createElement type props child))
+   ($ react createVNode  2 type props child))
   ([type props child & children]
    (assert (not (map? props)))
-   (apply ($ react :createElement) type props child children)))
+   (apply ($ react :createVNode) type props child children)))
 
 (defn as-element
   "Turns a vector of Hiccup syntax into a React element. Returns form
@@ -96,25 +96,6 @@
   (ratom/flush!)
   (dom/force-update-all)
   (batch/flush-after-render))
-
-(defn create-class
-  "Create a component, React style. Should be called with a map,
-  looking like this:
-
-    {:get-initial-state (fn [this])
-     :component-will-receive-props (fn [this new-argv])
-     :should-component-update (fn [this old-argv new-argv])
-     :component-will-mount (fn [this])
-     :component-did-mount (fn [this])
-     :component-will-update (fn [this new-argv])
-     :component-did-update (fn [this old-argv])
-     :component-will-unmount (fn [this])
-     :reagent-render (fn [args....])}   ;; or :render (fn [this])
-
-  Everything is optional, except either :reagent-render or :render."
-  [spec]
-  (comp/create-class spec))
-
 
 (defn current-component
   "Returns the current React component (a.k.a this) in a component

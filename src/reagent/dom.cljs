@@ -1,6 +1,5 @@
 (ns reagent.dom
-  (:require [cljsjs.react.dom]
-            [reagent.impl.util :as util]
+  (:require [reagent.impl.util :as util]
             [reagent.impl.template :as tmpl]
             [reagent.impl.batching :as batch]
             [reagent.ratom :as ratom]
@@ -10,13 +9,7 @@
 (defonce ^:private imported nil)
 
 (defn module []
-  (cond
-    (some? imported) imported
-    (exists? js/ReactDOM) (set! imported js/ReactDOM)
-    (exists? js/require) (or (set! imported (js/require "react-dom"))
-                             (throw (js/Error. "require('react-dom') failed")))
-    :else
-    (throw (js/Error. "js/ReactDOM is missing"))))
+  util/react)
 
 
 (defonce ^:private roots (atom {}))

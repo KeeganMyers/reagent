@@ -1,14 +1,14 @@
 (ns reagent.impl.util
-  (:require [cljsjs.react]
+  (:require [cljsjs.inferno]
             [reagent.debug :refer-macros [dbg log warn]]
             [reagent.interop :refer-macros [$ $!]]
             [clojure.string :as string]))
 
 (defonce react
-  (cond (exists? js/React) js/React
-        (exists? js/require) (or (js/require "react")
-                                 (throw (js/Error. "require('react') failed")))
-        :else (throw (js/Error. "js/React is missing"))))
+  (cond (exists? js/Inferno) js/Inferno
+        (exists? js/require) (or (js/require "Inferno")
+                                 (throw (js/Error. "require('Inferno') failed")))
+        :else (throw (js/Error. "js/Inferno is missing"))))
 
 (def is-client (and (exists? js/window)
                     (-> js/window ($ :document) nil? not)))
