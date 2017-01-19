@@ -5,7 +5,10 @@
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.8.51"]
-                 [cljsjs/inferno "1.0.3-0"]]
+                 [cljsjs/inferno "1.2.1-0"]
+                 [cljsjs/inferno-component "1.2.1-0"]
+                 [cljsjs/inferno-create-element "1.2.1-0"]
+                 ]
 
   :plugins [[lein-cljsbuild "1.1.3"]
             [codox "0.9.0"]]
@@ -40,6 +43,7 @@
                     :cljsbuild
                     {:builds {:client
                               {:notify-command ["node" "bin/gen-site.js"]}}}}
+
 
              :prod [:site
                     {:cljsbuild

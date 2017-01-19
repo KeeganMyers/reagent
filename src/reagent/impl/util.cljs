@@ -1,5 +1,7 @@
 (ns reagent.impl.util
   (:require [cljsjs.inferno]
+            [cljsjs.inferno.component]
+            [cljsjs.inferno.create-element]
             [reagent.debug :refer-macros [dbg log warn]]
             [reagent.interop :refer-macros [$ $!]]
             [clojure.string :as string]))

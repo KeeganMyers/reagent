@@ -291,4 +291,5 @@
     ""))
 
 (defn reactify-component [comp]
+  (.log js/console comp)
     comp)

@@ -237,11 +237,12 @@
     (-> v (nth 1 nil) get-key)))
 
 (defn reag-element [tag v]
-  (let [c v
-        jsprops #js{:argv v}]
+  (.log js/console (str tag))
+  (.log js/console (str v))
+  (let [jsprops #js{:argv v}]
     (when-some [key (key-from-vec v)]
       ($! jsprops :key key))
-    ($ util/react createVNode 2 c jsprops)))
+    ($ util/react createElement (tag))))
 
 (defn adapt-react-class [c]
   (doto (NativeWrapper.)
@@ -350,15 +351,14 @@
 
 (defn make-element [argv comp jsprops first-child]
   (case (- (count argv) first-child)
-    ;; Optimize cases of zero or one child
     0 ($ util/react createVNode 2 comp jsprops)
 
     1 ($ util/react createVNode 2 comp jsprops
           (as-element (nth argv first-child nil)))
 
-    (.apply ($ util/react :createVNode) nil
+    ($ util/react createVNode 2 comp jsprops
             (reduce-kv (fn [a k v]
                          (when (>= k first-child)
                            (.push a (as-element v)))
                          a)
-                       #js[comp jsprops] argv))))
+                       #js[] argv))))
