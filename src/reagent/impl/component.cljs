@@ -260,11 +260,12 @@
       wrap-funs
       map-to-js))
 
+
 (defn create-class [body]
   {:pre [(map? body)]}
   (->> body
        cljsify
-       ($ util/react createClass)))
+       ($ util/react createElement)))
 
 (defn component-path [c]
   (let [elem (some-> (or (some-> c ($ :_reactInternalInstance))
@@ -290,6 +291,27 @@
         ""))
     ""))
 
+(defn fn-to-class [f]
+  (assert (ifn? f) (str "Expected a function, not " (pr-str f)))
+  (warn-unless (not (and (react-class? f)
+                         (not (reagent-class? f))))
+               "Using native React classes directly in Hiccup forms "
+               "is not supported. Use create-element or "
+               "adapt-react-class instead: " (let [n (util/fun-name f)]
+                                               (if (empty? n) f n))
+               (comp-name))
+  (if (reagent-class? f)
+    (cache-react-class f f)
+    (let [spec (meta f)
+          withrender (assoc spec :reagent-render f)
+          res (create-class withrender)]
+      (cache-react-class f res))))
+
+
+(defn as-class [tag]
+  (if-some [cached-class (cached-react-class tag)]
+    cached-class
+    (fn-to-class tag)))
+
 (defn reactify-component [comp]
-  (.log js/console comp)
     comp)

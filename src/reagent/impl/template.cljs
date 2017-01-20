@@ -237,12 +237,11 @@
     (-> v (nth 1 nil) get-key)))
 
 (defn reag-element [tag v]
-  (.log js/console (str tag))
-  (.log js/console (str v))
-  (let [jsprops #js{:argv v}]
+  (let [c (comp/as-class tag)
+        jsprops #js{:argv v}]
     (when-some [key (key-from-vec v)]
       ($! jsprops :key key))
-    ($ util/react createElement (tag))))
+    ($ util/react createElement c (vec (drop 1 v)))))
 
 (defn adapt-react-class [c]
   (doto (NativeWrapper.)

@@ -8,6 +8,7 @@
                  [cljsjs/inferno "1.2.1-0"]
                  [cljsjs/inferno-component "1.2.1-0"]
                  [cljsjs/inferno-create-element "1.2.1-0"]
+                 [cljsjs/inferno-create-class "1.2.1-0"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.3"]
