@@ -265,7 +265,7 @@
   {:pre [(map? body)]}
   (->> body
        cljsify
-       ($ util/react createElement)))
+       ($ util/react createClass)))
 
 (defn component-path [c]
   (let [elem (some-> (or (some-> c ($ :_reactInternalInstance))

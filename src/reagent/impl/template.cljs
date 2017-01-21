@@ -241,7 +241,7 @@
         jsprops #js{:argv v}]
     (when-some [key (key-from-vec v)]
       ($! jsprops :key key))
-    ($ util/react createElement c (vec (drop 1 v)))))
+    ($ util/react createElement c jsprops)))
 
 (defn adapt-react-class [c]
   (doto (NativeWrapper.)
